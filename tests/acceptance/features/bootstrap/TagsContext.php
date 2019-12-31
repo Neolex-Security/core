@@ -428,7 +428,7 @@ class TagsContext implements Context {
 	public function userCreatesATagWithNameAndGroups($user, $type, $name, $groups) {
 		$this->createTagWithNameAndGroups(
 			$user,
-			 $type,
+			$type,
 			$name,
 			$groups
 		);
@@ -832,7 +832,8 @@ class TagsContext implements Context {
 	 * @throws \Exception
 	 */
 	public function userEditsTheTagWithNameAndSetItsNameToUsingTheWebDAVAPI($user, $oldName, $newName) {
-		$this->editTagName($user,
+		$this->editTagName(
+			$user,
 			$oldName,
 			$newName
 		);
@@ -849,7 +850,8 @@ class TagsContext implements Context {
 	 * @throws \Exception
 	 */
 	public function userHasEditedTheTagWithNameAndSetItsNameToUsingTheWebDAVAPI($user, $oldName, $newName) {
-		$this->editTagName($user,
+		$this->editTagName(
+			$user,
 			$oldName,
 			$newName
 		);
