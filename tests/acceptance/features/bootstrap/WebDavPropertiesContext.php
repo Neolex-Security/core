@@ -554,7 +554,7 @@ class WebDavPropertiesContext implements Context {
 			$user,
 			$path
 		);
-		Assert:assertNotNull(
+		Assert::assertNotNull(
 			$this->storedETAG[$user][$path],
 			'Expected stored etag to be some string but found null!'
 		);
