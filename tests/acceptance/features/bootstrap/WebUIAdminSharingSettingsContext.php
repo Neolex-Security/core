@@ -451,7 +451,7 @@ class WebUIAdminSharingSettingsContext extends RawMinkContext implements Context
 	 * @throws Exception
 	 */
 	public function theAdministratorHasAddedGroupToTheExcludeGroup($groups) {
-		$groups = \explode(',', trim($groups));
+		$groups = \explode(',', \trim($groups));
 		$groups = \array_map('trim', $groups); //removing whitespaces around group names
 		$groups = '"' . \implode('","', $groups) . '"';
 		SetupHelper::runOcc(
@@ -465,7 +465,7 @@ class WebUIAdminSharingSettingsContext extends RawMinkContext implements Context
 			$this->featureContext->getAdminPassword(),
 			$this->featureContext->getBaseUrl(),
 			$this->featureContext->getOcPath()
-			);
+		);
 		$response = SetupHelper::runOcc(
 			[
 				'config:app:get',
