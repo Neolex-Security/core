@@ -305,13 +305,49 @@ class WebUIAdminSharingSettingsContext extends RawMinkContext implements Context
 
 	/**
 	 * @When the administrator enables exclude groups from sharing using the webUI
-	 * @Given the administrator has enabled exclude groups from sharing from the admin sharing settings page
 	 *
 	 * @return void
 	 */
 	public function theAdministratorEnablesExcludeGroupsFromSharingUsingTheWebui() {
 		$this->adminSharingSettingsPage->enableExcludeGroupFromSharing(
 			$this->getSession()
+		);
+	}
+
+	/**
+	 * @Given the administrator has enabled exclude groups from sharing
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	public function theAdministratorHasEnabledExcludeGroupsFromSharingUsingTheWebui() {
+		SetupHelper::runOcc(
+			[
+				"config:app:set",
+				"core",
+				"shareapi_exclude_groups",
+				"--value=yes"
+			],
+			$this->featureContext->getAdminUsername(),
+			$this->featureContext->getAdminPassword(),
+			$this->featureContext->getBaseUrl(),
+			$this->featureContext->getOcPath()
+		);
+		$response = SetupHelper::runOcc(
+			[
+				"config:app:get",
+				"core",
+				"shareapi_exclude_groups"
+			],
+			$this->featureContext->getAdminUsername(),
+			$this->featureContext->getAdminPassword(),
+			$this->featureContext->getBaseUrl(),
+			$this->featureContext->getOcPath()
+		);
+		$status = \trim($response['stdOut']);
+		Assert::assertEquals(
+			"yes",
+			$status
 		);
 	}
 
@@ -394,7 +430,6 @@ class WebUIAdminSharingSettingsContext extends RawMinkContext implements Context
 
 	/**
 	 * @When the administrator adds group :group to the exclude group from sharing list using the webUI
-	 * @Given the administrator has added group :group to the exclude group from sharing list from the admin sharing settings page
 	 *
 	 * @param string $group
 	 *
@@ -403,6 +438,50 @@ class WebUIAdminSharingSettingsContext extends RawMinkContext implements Context
 	public function theAdministratorAddsGroupToTheExcludeGroupFromSharingList($group) {
 		$this->adminSharingSettingsPage->addGroupToExcludeGroupsFromSharingList(
 			$this->getSession(), $group
+		);
+	}
+
+	/**
+	 * @Given the administrator has added group :group to the exclude group
+	 *
+	 * @param string $groups
+	 * multiple groups can be passed as comma separated string
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	public function theAdministratorHasAddedGroupToTheExcludeGroup($groups) {
+		$groups = \explode(',', trim($groups));
+		$groups = \array_map('trim', $groups); //removing whitespaces around group names
+		$groups = '"' . \implode('","', $groups) . '"';
+		SetupHelper::runOcc(
+			[
+				'config:app:set',
+				'core',
+				'shareapi_exclude_groups_list',
+				"--value='[$groups]'"
+				],
+			$this->featureContext->getAdminUsername(),
+			$this->featureContext->getAdminPassword(),
+			$this->featureContext->getBaseUrl(),
+			$this->featureContext->getOcPath()
+			);
+		$response = SetupHelper::runOcc(
+			[
+				'config:app:get',
+				'core',
+				'shareapi_exclude_groups_list'
+			],
+			$this->featureContext->getAdminUsername(),
+			$this->featureContext->getAdminPassword(),
+			$this->featureContext->getBaseUrl(),
+			$this->featureContext->getOcPath()
+		);
+		$excludedGroupsFromResponse = (\trim($response['stdOut']));
+		$excludedGroupsFromResponse = \trim($excludedGroupsFromResponse, '[]');
+		Assert::assertEquals(
+			$groups,
+			$excludedGroupsFromResponse
 		);
 	}
 
